@@ -1,0 +1,19 @@
+{
+  "name": "simply-vue",
+  "version": "0.1.0",
+  "description": "A simple VueJS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luobotang/simply-vue.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luobotang/simply-vue/issues"
+  },
+  "homepage": "https://github.com/luobotang/simply-vue#readme"
+}
