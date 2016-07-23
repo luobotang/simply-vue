@@ -1,0 +1,7 @@
+exports.model = {
+
+}
+
+exports.text = {
+	
+}
