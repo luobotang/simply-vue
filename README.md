@@ -4,7 +4,7 @@ A simple VueJS.
 
 ## usage
 
-```javacript
+```javascript
 var vm = new Vue({
   el: '#box',
   data: {

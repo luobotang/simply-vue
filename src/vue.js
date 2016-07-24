@@ -61,11 +61,8 @@ Vue.prototype.$mount = function (el) {
 
 Vue.prototype._compile = function (el) {
 	var original = el
-
 	compileRoot(el)(this, el)
 	compile(el)(this, el)
-
-	//replace(original, el)
 }
 
 Vue.prototype._bindDir = function (descriptor, node) {

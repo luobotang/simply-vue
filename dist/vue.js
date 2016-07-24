@@ -107,11 +107,8 @@
 
 	Vue.prototype._compile = function (el) {
 		var original = el
-
 		compileRoot(el)(this, el)
 		compile(el)(this, el)
-
-		//replace(original, el)
 	}
 
 	Vue.prototype._bindDir = function (descriptor, node) {
@@ -131,7 +128,6 @@
 	exports.compileRoot = function compileRoot(el, options) {
 		return function rootLinkFn(vm, el) {
 			// TODO
-			console.debug('rootLinkFn')
 		}
 	}
 
@@ -140,7 +136,6 @@
 		var childLinkFn = el.hasChildNodes() ? compileNodeList(el.childNodes, options) : null
 
 		return function compositeLinkFn(vm, el) {
-	  	console.debug('compositeLinkFn')
 			var childNodes = [].slice.call(el.childNodes)
 			linkAndCapture(function compositeLinkCapturer() {
 				if (nodeLinkFn) nodeLinkFn(vm, el)
@@ -209,7 +204,6 @@
 	function compileTextNode(node, options) {
 		var tokens = parseText(node.wholeText)
 		if (tokens) {
-	  	console.debug('find text with tag!')
 			var frag = document.createDocumentFragment()
 			tokens.forEach(function (token) {
 				var el = token.tag ? processTextToken(token) : document.createTextNode(token.value)

@@ -7,7 +7,6 @@ var regTag = /{{([^{}]+)}}/g
 exports.compileRoot = function compileRoot(el, options) {
 	return function rootLinkFn(vm, el) {
 		// TODO
-		console.debug('rootLinkFn')
 	}
 }
 
@@ -16,7 +15,6 @@ exports.compile = function compile(el, options) {
 	var childLinkFn = el.hasChildNodes() ? compileNodeList(el.childNodes, options) : null
 
 	return function compositeLinkFn(vm, el) {
-  	console.debug('compositeLinkFn')
 		var childNodes = [].slice.call(el.childNodes)
 		linkAndCapture(function compositeLinkCapturer() {
 			if (nodeLinkFn) nodeLinkFn(vm, el)
@@ -85,7 +83,6 @@ function compileElement(el, options) {
 function compileTextNode(node, options) {
 	var tokens = parseText(node.wholeText)
 	if (tokens) {
-  	console.debug('find text with tag!')
 		var frag = document.createDocumentFragment()
 		tokens.forEach(function (token) {
 			var el = token.tag ? processTextToken(token) : document.createTextNode(token.value)
