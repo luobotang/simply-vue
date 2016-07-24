@@ -1,8 +1,13 @@
+var Watcher = require('./watcher')
+
+module.exports = Directive
+
 function Directive(descriptor, vm, el) {
 	this.vm = vm
 	this.el = el
 	this.descriptor = descriptor
 	this.name = descriptor.name
+	this.expression = descriptor.exp
 }
 
 Directive.prototype._bind = function () {
@@ -10,9 +15,9 @@ Directive.prototype._bind = function () {
 	var descriptor = this.descriptor
 
 	if (this.el && this.el.removeAttribute) {
-		this.el.removeAttribute(attr)
+		this.el.removeAttribute(descriptor.attr || 'v-' + name)
 	}
-	
+
 	var def = descriptor.def
 	this.update = def.update
 	this.bind = def.bind
@@ -24,7 +29,7 @@ Directive.prototype._bind = function () {
 	}.bind(this)
 
 	var watcher = this._watcher = new Watcher(this.vm, this.expression, this._update)
-	if (this.update) this.update(watcher.value)
+	this.update(watcher.value)
 }
 
 Directive.prototype.set = function (value) {
@@ -32,5 +37,5 @@ Directive.prototype.set = function (value) {
 }
 
 Directive.prototype.on = function (event, handler) {
-	this.el.addEventHandler(event, handler)
+	this.el.addEventListener(event, handler, false)
 }

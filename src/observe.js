@@ -1,6 +1,8 @@
 var Dep = require('./dep')
+var _utils = require('./utils')
+var replace = _utils.replace
 
-function observe(value, vm) {
+module.exports = function observe(value, vm) {
 	var ob
 	if (value.hasOwnProperty('__ob__')) {
 		ob = value.__ob__
@@ -16,7 +18,14 @@ function observe(value, vm) {
 function Observer(value) {
 	this.value = value
 	this.dep = new Dep()
-	value.__ob__ = this
+
+	Object.defineProperty(value, '__ob__', {
+    value: this,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+
 	this.walk(value)
 }
 

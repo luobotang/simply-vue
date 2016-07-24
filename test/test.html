@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Simple Vue</title>
+</head>
+<body>
+	<div id="box">
+		<p><input type="text" v-model="name"></p>
+		<p>Your name: {{name}}</p>
+	</div>
+	<script src="../dist/vue.js"></script>
+	<script>
+		var vm = new Vue({
+			el: '#box',
+			data: {
+				name: 'luobo'
+			}
+		})
+	</script>
+</body>
+</html>

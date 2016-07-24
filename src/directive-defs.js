@@ -1,7 +1,0 @@
-exports.model = {
-
-}
-
-exports.text = {
-	
-}

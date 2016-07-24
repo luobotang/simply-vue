@@ -1,4 +1,9 @@
+var uid = 0
+
+module.exports = Dep
+
 function Dep() {
+  this.id = uid++
 	this.subs = []
 }
 
