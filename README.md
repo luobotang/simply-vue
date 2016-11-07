@@ -15,4 +15,4 @@ var vm = new Vue({
 
 ## demo
 
-See [demo](test/test.html).
+See [demo](http://www.luobotang.cn/simply-vue/test/test.html).
