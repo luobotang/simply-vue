@@ -1,8 +1,7 @@
-var Dep = require('./dep')
-var _utils = require('./utils')
-var replace = _utils.replace
+import Dep from './dep'
+import { replace } from './utils'
 
-module.exports = function observe(value, vm) {
+export default function observe(value, vm) {
 	var ob
 	if (value.hasOwnProperty('__ob__')) {
 		ob = value.__ob__

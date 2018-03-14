@@ -1,16 +1,15 @@
-var directives = require('./directives')
-var toArray = require('./utils').toArray
-var replace = require('./utils').replace
+import directives from './directives/index'
+import { toArray, replace } from './utils'
 
 var regTag = /{{([^{}]+)}}/g
 
-exports.compileRoot = function compileRoot(el, options) {
+export function compileRoot(el, options) {
 	return function rootLinkFn(vm, el) {
 		// TODO
 	}
 }
 
-exports.compile = function compile(el, options) {
+export function compile(el, options) {
 	var nodeLinkFn = compileNode(el, options)
 	var childLinkFn = el.hasChildNodes() ? compileNodeList(el.childNodes, options) : null
 

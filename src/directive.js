@@ -1,8 +1,6 @@
-var Watcher = require('./watcher')
+import Watcher from './watcher'
 
-module.exports = Directive
-
-function Directive(descriptor, vm, el) {
+export default function Directive(descriptor, vm, el) {
 	this.vm = vm
 	this.el = el
 	this.descriptor = descriptor

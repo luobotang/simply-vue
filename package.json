@@ -1,9 +1,10 @@
 {
   "name": "simply-vue",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple VueJS.",
   "main": "index.js",
   "scripts": {
+    "build": "node build/build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/luobotang/simply-vue/issues"
   },
-  "homepage": "https://github.com/luobotang/simply-vue#readme"
+  "homepage": "https://github.com/luobotang/simply-vue#readme",
+  "devDependencies": {
+    "rollup": "^0.56.5"
+  }
 }

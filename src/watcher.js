@@ -1,8 +1,6 @@
-var Dep = require('./dep')
+import Dep from './dep'
 
-module.exports = Watcher
-
-function Watcher(vm, exp, cb) {
+export default function Watcher(vm, exp, cb) {
   this.vm = vm
   vm._watchers.push(this)
   this.exp = exp

@@ -1,14 +1,9 @@
-var _compile = require('./compile')
-var compileRoot = _compile.compileRoot
-var compile = _compile.compile
-var _utils = require('./utils')
-var replace = _utils.replace
-var observe = require('./observe')
-var Directive = require('./directive')
+import { compileRoot, compile } from './compile'
+import { replace } from './utils'
+import observe from './observe'
+import Directive from './directive'
 
-window.Vue = Vue
-
-function Vue(options) {
+export default function Vue(options) {
 	this._init(options)
 }
 

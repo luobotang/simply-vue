@@ -1,7 +1,7 @@
-exports.model = {
+var model = {
   bind: function () {
     var self = this
-    this.on('change', function () {
+    this.on('input', function () {
       self.set(self.el.value)
     })
   },
@@ -10,11 +10,16 @@ exports.model = {
   }
 }
 
-exports.text = {
+var text = {
   bind: function () {
     // do nothing
   },
   update: function (value) {
     this.el.textContent = value
   }
+}
+
+export default {
+  model: model,
+  text: text
 }
