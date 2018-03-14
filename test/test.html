@@ -1,23 +1,23 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width">
-	<title>Simple Vue</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>Simple Vue</title>
 </head>
 <body>
-	<div id="box">
-		<p><input type="text" v-model="name"></p>
-		<p>Your name: {{name}}</p>
-	</div>
-	<script src="../dist/vue.js?v=0.2.0"></script>
-	<script>
-		var vm = new Vue({
-			el: '#box',
-			data: {
-				name: 'luobo'
-			}
-		})
-	</script>
+<div id="box">
+	<input type="text" v-model="name">
+	<p>Your name: {{ name }}</p>
+</div>
+<script src="../dist/vue.js?v=0.2.0"></script>
+<script>
+var vm = new Vue({
+	el: '#box',
+	data: {
+		name: 'luobo'
+	}
+})
+</script>
 </body>
 </html>
