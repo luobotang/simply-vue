@@ -5,22 +5,22 @@
 }(this, (function () { 'use strict';
 
 var model = {
-  bind: function () {
+  bind() {
     var self = this;
-    this.on('input', function () {
+    this.on('input', () => {
       self.set(self.el.value);
     });
   },
-  update: function (value) {
+  update(value) {
     this.el.value = value;
   }
 };
 
 var text = {
-  bind: function () {
+  bind() {
     // do nothing
   },
-  update: function (value) {
+  update(value) {
     this.el.textContent = value;
   }
 };
@@ -195,69 +195,59 @@ function parseText(text) {
   }
 }
 
-var uid = 0;
+let uid = 0;
 
-function Dep() {
-  this.id = uid++;
-	this.subs = [];
+class Dep {
+	constructor() {
+		this.id = uid++;
+		this.subs = [];
+	}
+
+	addSub(sub) {
+		this.subs.push(sub);
+	}
+
+	depend() {
+		Dep.target.addDep(this);
+	}
+
+	notify() {
+		this.subs.forEach((sub) => sub.update());
+	}
 }
 
 Dep.target = null;
 
-Dep.prototype.addSub = function (sub) {
-	this.subs.push(sub);
-};
-
-Dep.prototype.depend = function () {
-	Dep.target.addDep(this);
-};
-
-Dep.prototype.notify = function () {
-	this.subs.forEach(function (sub) {
-		sub.update();
-	});
-};
-
-function observe(value, vm) {
-	var ob;
-	if (value.hasOwnProperty('__ob__')) {
-		ob = value.__ob__;
-	} else {
-		ob = new Observer(value);
+class Observer {
+	constructor(value) {
+		this.value = value;
+		this.dep = new Dep();
+	
+		Object.defineProperty(value, '__ob__', {
+			value: this,
+			enumerable: false,
+			writable: true,
+			configurable: true
+		});
+	
+		this.walk(value);
 	}
-	if (ob && vm) {
-		ob.addVm(vm);
+
+	walk(obj) {
+		Object.keys(obj).forEach(function (key) {
+			this.convert(key, obj[key]);
+		}, this);
 	}
-	return vm
+
+	convert(key, value) {
+		defineReactive(this.value, key, value);
+	}
+
+	addVm(vm) {
+		(this.vms || (this.vms = [])).push(vm);
+	}
 }
 
-function Observer(value) {
-	this.value = value;
-	this.dep = new Dep();
-
-	Object.defineProperty(value, '__ob__', {
-    value: this,
-    enumerable: false,
-    writable: true,
-    configurable: true
-  });
-
-	this.walk(value);
-}
-
-Observer.prototype.walk = function (obj) {
-	Object.keys(obj).forEach(function (key) {
-		this.convert(key, obj[key]);
-	}, this);
-};
-
-Observer.prototype.convert = function (key, value) {
-	defineReactive(this.value, key, value);
-};
-
-Observer.prototype.addVm = function (vm) {
-	(this.vms || (this.vms = [])).push(vm);
-};
 
 function defineReactive(obj, key, value) {
 	var dep = new Dep();
@@ -281,153 +271,172 @@ function defineReactive(obj, key, value) {
 	});
 }
 
-function Watcher(vm, exp, cb) {
-  this.vm = vm;
-  vm._watchers.push(this);
-  this.exp = exp;
-  this.cb = cb;
-  this.deps = [];
-  this.depIds = {};
-
-  this.getter = function (vm) {
-    return vm[exp]
-  };
-  this.setter = function (vm, value) {
-    vm[exp] = value;
-  };
-
-  this.value = this.get();
+function observe(value, vm) {
+	var ob;
+	if (value.hasOwnProperty('__ob__')) {
+		ob = value.__ob__;
+	} else {
+		ob = new Observer(value);
+	}
+	if (ob && vm) {
+		ob.addVm(vm);
+	}
+	return vm
 }
 
-Watcher.prototype.get = function () {
-  Dep.target = this;
-  var value = this.getter.call(this.vm, this.vm);
-  Dep.target = null;
-  return value
-};
-
-Watcher.prototype.set = function (value) {
-  this.setter.call(this.vm, this.vm, value);
-};
-
-Watcher.prototype.addDep = function (dep) {
-  var id = dep.id;
-  if (!this.depIds[id]) {
-    dep.addSub(this);
-    this.depIds[id] = true;
-    this.deps.push(dep);
+class Watcher {
+  constructor(vm, exp, cb) {
+    this.vm = vm;
+    vm._watchers.push(this);
+    this.exp = exp;
+    this.cb = cb;
+    this.deps = [];
+    this.depIds = {};
+  
+    this.getter = function (vm) {
+      return vm[exp]
+    };
+    this.setter = function (vm, value) {
+      vm[exp] = value;
+    };
+  
+    this.value = this.get();
   }
-};
 
-Watcher.prototype.update = function () {
-  this.run();
-};
-
-Watcher.prototype.run = function () {
-  var value = this.get();
-  if (this.value !== value) {
-    var oldValue = this.value;
-    this.value = value;
-    this.cb.call(this.vm, value, oldValue);
+  get() {
+    Dep.target = this;
+    var value = this.getter.call(this.vm, this.vm);
+    Dep.target = null;
+    return value
   }
-};
 
-function Directive(descriptor, vm, el) {
-	this.vm = vm;
-	this.el = el;
-	this.descriptor = descriptor;
-	this.name = descriptor.name;
-	this.expression = descriptor.exp;
+  set(value) {
+    this.setter.call(this.vm, this.vm, value);
+  }
+
+  addDep(dep) {
+    var id = dep.id;
+    if (!this.depIds[id]) {
+      dep.addSub(this);
+      this.depIds[id] = true;
+      this.deps.push(dep);
+    }
+  }
+
+  update() {
+    this.run();
+  }
+
+  run() {
+    var value = this.get();
+    if (this.value !== value) {
+      var oldValue = this.value;
+      this.value = value;
+      this.cb.call(this.vm, value, oldValue);
+    }
+  }
 }
 
-Directive.prototype._bind = function () {
-	var name = this.name;
-	var descriptor = this.descriptor;
-
-	if (this.el && this.el.removeAttribute) {
-		this.el.removeAttribute(descriptor.attr || 'v-' + name);
+class Directive {
+	constructor(descriptor, vm, el) {
+		this.vm = vm;
+		this.el = el;
+		this.descriptor = descriptor;
+		this.name = descriptor.name;
+		this.expression = descriptor.exp;
 	}
 
-	var def = descriptor.def;
-	this.update = def.update;
-	this.bind = def.bind;
+	_bind() {
+		var name = this.name;
+		var descriptor = this.descriptor;
+	
+		if (this.el && this.el.removeAttribute) {
+			this.el.removeAttribute(descriptor.attr || 'v-' + name);
+		}
+	
+		var def = descriptor.def;
+		this.update = def.update;
+		this.bind = def.bind;
+	
+		if (this.bind) this.bind();
+	
+		this._update = function (val) {
+			this.update(val);
+		}.bind(this);
+	
+		var watcher = this._watcher = new Watcher(this.vm, this.expression, this._update);
+		this.update(watcher.value);
+	}
 
-	if (this.bind) this.bind();
+	set(value) {
+		this._watcher.set(value);
+	}
 
-	this._update = function (val) {
-		this.update(val);
-	}.bind(this);
-
-	var watcher = this._watcher = new Watcher(this.vm, this.expression, this._update);
-	this.update(watcher.value);
-};
-
-Directive.prototype.set = function (value) {
-	this._watcher.set(value);
-};
-
-Directive.prototype.on = function (event, handler) {
-	this.el.addEventListener(event, handler, false);
-};
-
-function Vue(options) {
-	this._init(options);
+	on(event, handler) {
+		this.el.addEventListener(event, handler, false);
+	}
 }
 
-Vue.prototype._init = function (options) {
-  this.$options = options;
-  this._directives = [];
-  this._watchers = [];
+class Vue {
+	constructor(options) {
+		this._init(options);
+	}
 
-  this._isVue = true;
+	_init(options) {
+		this.$options = options;
+		this._directives = [];
+		this._watchers = [];
+	
+		this._isVue = true;
+	
+		this._initState();
+		this.$mount(options.el);
+	}
 
-	this._initState();
-	this.$mount(options.el);
-};
+	_initState() {
+		this._initProp();
+		this._initData();
+	}
 
-Vue.prototype._initState = function () {
-	this._initProp();
-	this._initData();
-};
+	_initProp() {
+		var options = this.$options;
+		options.el = document.querySelector(options.el);
+	}
 
-Vue.prototype._initProp = function () {
-	var options = this.$options;
-	options.el = document.querySelector(options.el);
-};
+	_initData() {
+		var data = this._data = this.$options.data || {};
+		Object.keys(this._data).forEach(function (key) {
+			this._proxy(key);
+		}, this);
+		observe(data, this);
+	}
 
-Vue.prototype._initData = function () {
-	var data = this._data = this.$options.data || {};
-	Object.keys(this._data).forEach(function (key) {
-		this._proxy(key);
-	}, this);
-	observe(data, this);
-};
+	_proxy(key) {
+		var self = this;
+		Object.defineProperty(self, key, {
+			configurable: true,
+			enumerable: true,
+			get: function proxyGetter() {
+				return self._data[key];
+			},
+			set: function proxySetter(val) {
+				self._data[key] = val;
+			}
+		});
+	}
 
-Vue.prototype._proxy = function (key) {
-	var self = this;
-	Object.defineProperty(self, key, {
-		configurable: true,
-		enumerable: true,
-		get: function proxyGetter() {
-			return self._data[key];
-		},
-		set: function proxySetter(val) {
-			self._data[key] = val;
-		}
-	});
-};
+	$mount(el) {
+		this._compile(el);
+	}
 
-Vue.prototype.$mount = function (el) {
-	this._compile(el);
-};
+	_compile(el) {
+		compile(el)(this, el);
+	}
 
-Vue.prototype._compile = function (el) {
-	compile(el)(this, el);
-};
-
-Vue.prototype._bindDir = function (descriptor, node) {
-  this._directives.push(new Directive(descriptor, this, node));
-};
+	_bindDir(descriptor, node) {
+		this._directives.push(new Directive(descriptor, this, node));
+	}
+}
 
 return Vue;
 

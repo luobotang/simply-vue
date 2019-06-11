@@ -1,22 +1,24 @@
-var uid = 0
+let uid = 0
 
-export default function Dep() {
-  this.id = uid++
-	this.subs = []
+class Dep {
+	constructor() {
+		this.id = uid++
+		this.subs = []
+	}
+
+	addSub(sub) {
+		this.subs.push(sub)
+	}
+
+	depend() {
+		Dep.target.addDep(this)
+	}
+
+	notify() {
+		this.subs.forEach((sub) => sub.update())
+	}
 }
 
 Dep.target = null
 
-Dep.prototype.addSub = function (sub) {
-	this.subs.push(sub)
-}
-
-Dep.prototype.depend = function () {
-	Dep.target.addDep(this)
-}
-
-Dep.prototype.notify = function () {
-	this.subs.forEach(function (sub) {
-		sub.update()
-	})
-}
+export default Dep

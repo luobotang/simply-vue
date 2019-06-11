@@ -1,20 +1,20 @@
 var model = {
-  bind: function () {
+  bind() {
     var self = this
-    this.on('input', function () {
+    this.on('input', () => {
       self.set(self.el.value)
     })
   },
-  update: function (value) {
+  update(value) {
     this.el.value = value
   }
 }
 
 var text = {
-  bind: function () {
+  bind() {
     // do nothing
   },
-  update: function (value) {
+  update(value) {
     this.el.textContent = value
   }
 }
