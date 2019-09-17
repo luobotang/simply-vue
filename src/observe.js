@@ -55,7 +55,7 @@ function defineReactive(obj, key, value) {
 
 export default function observe(value, vm) {
 	var ob
-	if (value.hasOwnProperty('__ob__')) {
+	if (value.hasOwnProperty('__ob__')) { // eslint-disable-line no-prototype-builtins
 		ob = value.__ob__
 	} else {
 		ob = new Observer(value)

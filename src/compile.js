@@ -3,8 +3,8 @@ import { toArray, replace } from './utils'
 
 var regTag = /{{([^{}]+)}}/g
 
-export function compileRoot(el, options) {
-	return function rootLinkFn(vm, el) {
+export function compileRoot(el, options) { // eslint-disable-line no-unused-vars
+	return function rootLinkFn(vm, el) { // eslint-disable-line no-unused-vars
 		// TODO
 	}
 }
@@ -65,10 +65,10 @@ function makeChildLinkFn(linkFns) {
 	}
 }
 
-function compileElement(el, options) {
+function compileElement(el, options) { // eslint-disable-line no-unused-vars
 	// 只处理 input[type="text"][v-model]
 	if (el.tagName === 'INPUT' && el.hasAttribute('v-model')) {
-  	var exp = el.getAttribute('v-model').trim()
+		var exp = el.getAttribute('v-model').trim()
 		return makeNodeLinkFn({
 			name: 'model',
 			exp: exp,
@@ -79,7 +79,7 @@ function compileElement(el, options) {
 	}
 }
 
-function compileTextNode(node, options) {
+function compileTextNode(node, options) { // eslint-disable-line no-unused-vars
 	var tokens = parseText(node.wholeText)
 	if (tokens) {
 		var frag = document.createDocumentFragment()
@@ -113,7 +113,6 @@ function makeTextNodeLinkFn(tokens, frag) {
 		var fragClone = frag.cloneNode(true)
 		var childNodes = toArray(fragClone.childNodes)
 		tokens.forEach(function (token, i) {
-			var value = token.value
 			if (token.tag) {
 				var node = childNodes[i]
 				vm._bindDir(token.descriptor, node)
@@ -130,7 +129,7 @@ function parseText(text) {
     var lastIndex = regTag.lastIndex = 0
     var match, index, value
 
-    while (match = regTag.exec(text)) {
+    while ((match = regTag.exec(text))) {
 
       index = match.index
       // push text token
