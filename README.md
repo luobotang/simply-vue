@@ -1,6 +1,6 @@
 # simply-vue
 
-[![build status](https://img.shields.io/travis/luobotang/simply-vue/master.svg?style=flat-square)](https://travis-ci.org/luobotang/simply-vue)
+[![Build Status](https://travis-ci.org/luobotang/simply-vue.svg?branch=master)](https://travis-ci.org/luobotang/simply-vue)
 
 A simple VueJS.
 
